@@ -7,30 +7,52 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header>
-      <div id="header_div_titulo">
-        <h1 id="header_titulo">PokeAPI</h1>
-        <p id="header_subtitulo">
+    <header class="header">
+      <div class="header_titulo">
+        <h1 class="header_titulo-texto">PokeDex</h1>
+        <p class="header_subtitulo">
           Busca informacion sobre tus Pokemons favoritos
         </p>
       </div>
 
-      <form class="form" id="form_busqueda">
+      <form class="form-busqueda">
         <input
           type="text"
-          id="input_busqueda"
+          class="form_input"
           placeholder="Buscar Pokemon por nombre o ID"
           required
         />
-        <button type="submit" id="btn_busqueda">Buscar</button>
+        <button type="submit" class="form_btn">Buscar</button>
       </form>
 
-      <div id="header_div_tema">
-        <button id="btn_tema">Cambiar Tema</button>
+      <div class="header_tema">
+        <button class="btn_tema" id="btn-tema">Cambiar Tema</button>
       </div>
     </header>
 
-    <main></main>
+    <main class="main">
+      <aside class="col col-recientes">
+        <h2>Recientes</h2>
+        <div id="recientes-lista"></div>
+      </aside>
+
+      <section class="col col-centro">
+        <div class="pokemon-ficha">
+          <h2>Pokemon</h2>
+          <div id="pokemon-info"></div>
+        </div>
+
+        <div class="pokemon-lista">
+          <h2>Lista</h2>
+          <div id="lista-pokemon"></div>
+        </div>
+      </section>
+
+      <aside class="col col-favoritos">
+        <h2>Favoritos</h2>
+        <div id="favoritos-lista"></div>
+      </aside>
+    </main>
 
     <script src="app.js" defer></script>
   </body>

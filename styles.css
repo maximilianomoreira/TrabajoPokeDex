@@ -9,6 +9,10 @@
   --letrasDark: #dadada;
   --btn: #ffd900;
   --btnHover: #eec10e;
+  --divListas: #a8a8a8;
+  --divListasDark: #252525;
+  --divlistasLetras: #000000;
+  --divlistasLetrasDark: #ffffff;
 }
 
 body {
@@ -25,6 +29,8 @@ body.tema-oscuro {
   --mainLight: var(--mainDark);
   --seccionLight: var(--seccionDark);
   --letrasLight: var(--letrasDark);
+  --divListas: var(--divListasDark);
+  --divlistasLetras: var(--divlistasLetrasDark);
 }
 
 header {
@@ -102,6 +108,7 @@ form {
   grid-template-columns: 1fr 3fr 1fr;
   gap: 1rem;
   padding: 1rem;
+  align-items: start;
 }
 
 .col {
@@ -215,19 +222,40 @@ form {
 
 .card-pokemon:hover .btn-fav {
   display: block;
+  cursor: pointer;
 }
 
-/* Lista */
+/* Lista (De vuelta) */
 
 .item-lista {
   padding: 0.5rem;
   margin: 0.3rem 0;
-  background: #fff;
+  background: var(--divListas);
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--divlistasLetras);
 }
 .item-lista:hover {
-  background: #f1f1f1;
+  background: #adefff;
+}
+/* -- */
+
+.pokemon-card {
+  position: relative;
+  padding: 1rem;
+}
+
+.pokemon-card .btn-fav {
+  position: absolute;
+  top: 0.5rem;
+  right: 4rem;
+  display: block;
+  font-size: 1.5rem;
+  border: solid 0.2rem var(--btnHover);
+  cursor: pointer;
 }

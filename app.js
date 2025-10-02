@@ -51,6 +51,7 @@ function renderPokemon(p) {
   document.getElementById("poke-id").textContent = p.id;
   document.getElementById("poke-altura").textContent = p.height;
   document.getElementById("poke-peso").textContent = p.weight;
+  document.getElementById("poke-nombre").style.color = "var(--letrasLight)";
 
   // Imagen
   const img = document.getElementById("poke-img");
@@ -66,6 +67,13 @@ function renderPokemon(p) {
     chip.classList.add("chip-tipo");
     tiposDiv.appendChild(chip);
   });
+
+  agregarReciente({ id: p.id, name: p.name });
+
+  const btnFichaFav = document.getElementById("btn-fav-ficha");
+  btnFichaFav.onclick = () => {
+    agregarFavorito({ id: p.id, name: p.name });
+  };
 
   // lista habilidades
   const ul = document.getElementById("poke-habilidades");
@@ -125,7 +133,7 @@ function renderLista(pokemons) {
     const btnFav = card.querySelector(".btn-fav");
     btnFav.addEventListener("click", (e) => {
       e.stopPropagation();
-      console.log(`Agregado a favoritos: ${p.name} (#${id})`);
+      agregarFavorito({ id, name: p.name });
     });
     //--Favorito fin
 
@@ -180,5 +188,90 @@ function renderPaginacion(pagina) {
   btnUltimo.onclick = () => cargarLista(totalPaginas);
   paginacionDiv.appendChild(btnUltimo);
 }
-
 cargarLista();
+
+// Recientes y Favoritos
+const recientesDiv = document.getElementById("recientes-lista");
+const favoritosDiv = document.getElementById("favoritos-lista");
+
+let recientes = JSON.parse(localStorage.getItem("recientes")) || [];
+let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+
+function agregarReciente(pokemon) {
+  if (recientes.length > 0 && recientes[0].id === pokemon.id) return;
+  recientes = recientes.filter((r) => r.id !== pokemon.id);
+  recientes.unshift(pokemon);
+  if (recientes.length > 10) recientes.pop();
+  localStorage.setItem("recientes", JSON.stringify(recientes));
+  renderRecientes();
+}
+
+function renderRecientes() {
+  recientesDiv.innerHTML = "";
+  recientes.forEach((p) => {
+    const div = document.createElement("div");
+    div.classList.add("item-lista");
+    div.textContent = `#${p.id} ${p.name}`;
+    div.addEventListener("click", async () => {
+      const detalle = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
+      const data = await detalle.json();
+      renderPokemon(data);
+      agregarReciente({ id: p.id, name: p.name });
+    });
+    recientesDiv.appendChild(div);
+  });
+}
+
+function agregarFavorito(pokemon) {
+  if (favoritos.some((f) => f.id === pokemon.id)) return;
+
+  if (favoritos.length >= 50) return;
+
+  favoritos.push(pokemon);
+
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+
+  renderFavoritos();
+}
+
+function renderFavoritos() {
+  favoritosDiv.innerHTML = "";
+  favoritos.forEach((p) => {
+    const div = document.createElement("div");
+    div.classList.add("item-lista");
+    div.textContent = `#${p.id} ${p.name}`;
+    const btnDel = document.createElement("button");
+    btnDel.textContent = "X";
+    btnDel.style.marginLeft = "8px";
+    btnDel.style.background = "red";
+    btnDel.style.color = "white";
+    btnDel.style.border = "none";
+    btnDel.style.borderRadius = "4px";
+    btnDel.style.cursor = "pointer";
+
+    btnDel.addEventListener("click", (e) => {
+      e.stopPropagation();
+      eliminarFavorito(p.id);
+    });
+
+    div.appendChild(btnDel);
+
+    div.addEventListener("click", async () => {
+      const detalle = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
+      const data = await detalle.json();
+      renderPokemon(data);
+      agregarReciente({ id: p.id, name: p.name });
+    });
+
+    favoritosDiv.appendChild(div);
+  });
+}
+
+function eliminarFavorito(id) {
+  favoritos = favoritos.filter((f) => f.id !== id);
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+  renderFavoritos();
+}
+
+renderRecientes();
+renderFavoritos();

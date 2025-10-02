@@ -7,6 +7,8 @@
   --seccionDark: #686868;
   --letrasLight: #1a1a1a;
   --letrasDark: #dadada;
+  --btn: #ffd900;
+  --btnHover: #eec10e;
 }
 
 body {
@@ -69,14 +71,14 @@ form {
   font-size: 1rem;
   border: none;
   border-radius: 8px;
-  background-color: #ffcc00;
+  background-color: var(--btn);
   color: black;
   font-weight: bold;
   transition: all 0.3s ease;
 }
 
 .form_btn:hover {
-  background-color: #e6b800;
+  background-color: var(--btnHover);
   transform: scale(1.05);
 }
 
@@ -118,6 +120,8 @@ form {
   gap: 1rem;
 }
 
+/* Ficha */
+
 .pokemon-ficha,
 .pokemon-lista {
   background-color: var(--seccionLight);
@@ -127,7 +131,7 @@ form {
 
 .chip-tipo {
   display: inline-block;
-  background-color: #ffcc00;
+  background-color: var(--btn);
   color: #000;
   padding: 0.3rem 0.6rem;
   border-radius: 12px;
@@ -144,4 +148,86 @@ form {
   .col--centro {
     order: -1;
   }
+}
+
+/* Lista */
+
+.lista-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.card-pokemon {
+  background: var(--seccionLight);
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  position: relative;
+}
+.card-pokemon:hover {
+  transform: scale(1.05);
+  background: #adefff;
+  color: black;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.card-pokemon img {
+  width: 80px;
+  height: 80px;
+}
+
+.card-id {
+  font-size: 1rem;
+}
+
+.paginacion {
+  margin-top: 1rem;
+  text-align: center;
+}
+.paginacion button {
+  margin: 0.2rem;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--btn);
+  font-weight: bold;
+  cursor: pointer;
+}
+.paginacion button:hover {
+  background: var(--btnHover);
+}
+
+.btn-fav {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #87a8a6;
+  border: none;
+  border-radius: 50%;
+  padding: 0.3rem 0.5rem;
+  font-weight: bold;
+  display: none;
+}
+
+.card-pokemon:hover .btn-fav {
+  display: block;
+}
+
+/* Lista */
+
+.item-lista {
+  padding: 0.5rem;
+  margin: 0.3rem 0;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+.item-lista:hover {
+  background: #f1f1f1;
 }

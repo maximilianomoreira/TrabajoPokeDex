@@ -76,3 +76,109 @@ function renderPokemon(p) {
     ul.appendChild(li);
   });
 }
+
+// Lista y paginacion
+
+const listaPokemon = document.getElementById("lista-pokemon");
+const paginacionDiv = document.getElementById("paginacion");
+
+let paginaActual = 1;
+const porPagina = 24;
+let totalPokemons = 0;
+
+async function cargarLista(pagina = 1) {
+  listaPokemon.innerHTML = "<p> Cargando lista </p>";
+  const offset = (pagina - 1) * porPagina;
+
+  try {
+    const res = await fetch(
+      `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${porPagina}`
+    );
+    if (!res.ok) throw new Error("Error al cargar la lista");
+    const data = await res.json();
+
+    totalPokemons = data.count;
+    renderLista(data.results);
+    renderPaginacion(pagina);
+    paginaActual = pagina;
+  } catch (error) {
+    listaPokemon.innerHTML = "<p> Error al cargar la lista </p>";
+  }
+}
+
+function renderLista(pokemons) {
+  listaPokemon.innerHTML = "";
+  pokemons.forEach((p) => {
+    const id = p.url.split("/")[6];
+    const img = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+
+    const card = document.createElement("div");
+    card.classList.add("card-pokemon");
+    card.innerHTML = `
+      <button class="btn-fav">⭐</button>
+      <img src="${img}" alt="${p.name}">
+      <p>${p.name}</p>
+      <p class="card-id">#${id}</p>
+    `;
+
+    // Favorito
+    const btnFav = card.querySelector(".btn-fav");
+    btnFav.addEventListener("click", (e) => {
+      e.stopPropagation();
+      console.log(`Agregado a favoritos: ${p.name} (#${id})`);
+    });
+    //--Favorito fin
+
+    card.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("btn-fav")) return;
+      const detalle = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+      const data = await detalle.json();
+      renderPokemon(data);
+    });
+
+    listaPokemon.appendChild(card);
+  });
+}
+
+function renderPaginacion(pagina) {
+  const totalPaginas = Math.ceil(totalPokemons / porPagina);
+  paginacionDiv.innerHTML = "";
+
+  const btnPrimero = document.createElement("button");
+  btnPrimero.textContent = "Primero";
+  btnPrimero.disabled = pagina === 1;
+  btnPrimero.onclick = () => cargarLista(1);
+  paginacionDiv.appendChild(btnPrimero);
+
+  const btnAnterior = document.createElement("button");
+  btnAnterior.textContent = "Anterior";
+  btnAnterior.disabled = pagina === 1;
+  btnAnterior.onclick = () => cargarLista(pagina - 1);
+  paginacionDiv.appendChild(btnAnterior);
+
+  for (
+    let i = Math.max(1, pagina - 2);
+    i <= Math.min(totalPaginas, pagina + 2);
+    i++
+  ) {
+    const btnNum = document.createElement("button");
+    btnNum.textContent = i;
+    if (i === pagina) btnNum.style.background = "#ccc";
+    btnNum.onclick = () => cargarLista(i);
+    paginacionDiv.appendChild(btnNum);
+  }
+
+  const btnSiguiente = document.createElement("button");
+  btnSiguiente.textContent = "Siguiente";
+  btnSiguiente.disabled = pagina === totalPaginas;
+  btnSiguiente.onclick = () => cargarLista(pagina + 1);
+  paginacionDiv.appendChild(btnSiguiente);
+
+  const btnUltimo = document.createElement("button");
+  btnUltimo.textContent = "Último";
+  btnUltimo.disabled = pagina === totalPaginas;
+  btnUltimo.onclick = () => cargarLista(totalPaginas);
+  paginacionDiv.appendChild(btnUltimo);
+}
+
+cargarLista();
